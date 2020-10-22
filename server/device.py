@@ -35,6 +35,9 @@
 ----------------------------------------------------------------------
 """
 
+# System imports
+from time import sleep
+
 # Import the Adafruit lib
 import Adafruit_PCA9685
 
@@ -59,8 +62,8 @@ class Device:
         # Tweek for the correct range
         self.__az_servo_min = 150
         self.__az_servo_max = 600
-        self.__el_servo_min = 150
-        self.__el_servo_max = 600
+        self.__el_servo_min = 190
+        self.__el_servo_max = 400
         
         self.__az_value_per_degree = (self.__az_servo_max - self.__az_servo_min) / AZ_RANGE
         self.__el_value_per_degree = (self.__el_servo_max - self.__el_servo_min) / EL_RANGE
@@ -68,7 +71,16 @@ class Device:
         # Best for servos
         self.__device.set_pwm_freq(60)
         
-    def move(self, ch, deg)
+        # Send home
+        # AZ homes at 0 deg
+        self.__device.set_pwm(AZ, 0, 150)
+        # EL homes at 90 deg
+        self.__device.set_pwm(EL, 0, 400)
+        
+        self.__az_val = 150
+        self.__el_val = 400
+        
+    def move(self, ch, deg):
         """
         Move az or el to the given position.
         
@@ -83,18 +95,48 @@ class Device:
         """
         
         if ch == AZ:
-            self.__move(AZ, self.__az_value_per_degree * deg)
+            pos = int((self.__az_value_per_degree * deg) + self.__az_servo_min)
+            if pos >= self.__az_servo_min and pos <= self.__az_servo_max:
+                self.__move(AZ, pos)
+            else:
+                print("Invalid AZ pos %d" % pos)
         else:
-            self.__move(EL, self.__el_value_per_degree * deg)
+            deg = EL_RANGE - deg
+            pos = int((self.__el_value_per_degree * deg) + self.__el_servo_min)
+            if pos >= self.__el_servo_min and pos <= self.__el_servo_max:
+                self.__move(EL, pos)
+            else:
+                print("Invalid EL pos %d" % pos)
     
-    def __move(self, sc, value):
+    def __move(self, ch, value):
         
-        for n in range(value):
-            pwm.set_pwm(ch, 0, n)
-            sleep(0.01)
+        if ch == AZ:
+            if value > self.__az_val:
+                inc = 5
+            else:
+                inc = -5
+            for n in range(self.__az_val, value, inc):
+                self.__device.set_pwm(ch, 0, n)
+                sleep(0.1)
+            self.__device.set_pwm(ch, 0, value)
+            self.__az_val = value
+        else:
+            if value > self.__el_val:
+                inc = 5
+            else:
+                inc = -5
+            for n in range(self.__el_val, value, inc):
+                self.__device.set_pwm(ch, 0, n)
+                sleep(0.1)
+            self.__device.set_pwm(ch, 0, value)
+            self.__el_val = value
             
 # Test Entry point            
 if __name__ == '__main__':
     dev = Device()
+    dev.move(0,20)
+    dev.move(1,20)
+    sleep(3)
     dev.move(0,0)
     dev.move(1,0)
+    
