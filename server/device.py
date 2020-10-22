@@ -38,14 +38,15 @@
 # System imports
 from time import sleep
 
+# Application imports
+from defs import *
+
 # Import the Adafruit lib
 import Adafruit_PCA9685
 
-AZ = 0
-EL = 1
-AZ_RANGE = 180
-EL_RANGE = 90
-
+"""
+Device class implements low level servo interface
+"""
 class Device:
     
     def __init__(self):
@@ -70,6 +71,25 @@ class Device:
         
         # Best for servos
         self.__device.set_pwm_freq(60)
+        
+        # Send home
+        # AZ homes at 0 deg
+        self.__device.set_pwm(AZ, 0, 150)
+        # EL homes at 90 deg
+        self.__device.set_pwm(EL, 0, 400)
+        
+        self.__az_val = 150
+        self.__el_val = 400
+    
+    #------------------------------------------------------------------
+    # PUBLIC
+    def home(self):
+        """
+        Move az and el to the home position.
+        
+        Arguments:
+        
+        """
         
         # Send home
         # AZ homes at 0 deg
@@ -107,20 +127,34 @@ class Device:
                 self.__move(EL, pos)
             else:
                 print("Invalid EL pos %d" % pos)
-    
+                
+    #------------------------------------------------------------------
+    # PRIVATE
     def __move(self, ch, value):
+        """
+        Move implementation
+        
+        Arguments:
+            ch  --  channel to move AZ, EL
+            value   --  value to move to
+        """
         
         if ch == AZ:
+            # Determine move direction
             if value > self.__az_val:
                 inc = 5
             else:
                 inc = -5
+            # Move incrementally from where we are to destination
             for n in range(self.__az_val, value, inc):
                 self.__device.set_pwm(ch, 0, n)
                 sleep(0.1)
+            # Make sure wea arrive
             self.__device.set_pwm(ch, 0, value)
+            # Save new position
             self.__az_val = value
         else:
+            # Ditto for EL
             if value > self.__el_val:
                 inc = 5
             else:
@@ -130,7 +164,8 @@ class Device:
                 sleep(0.1)
             self.__device.set_pwm(ch, 0, value)
             self.__el_val = value
-            
+
+#------------------------------------------------------------------
 # Test Entry point            
 if __name__ == '__main__':
     dev = Device()
