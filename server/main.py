@@ -104,7 +104,7 @@ class RemoteCamera:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
                 # Start the video stream.
-                self.__vlc = subprocess.Popen(['sh', '/home/pi/VLC/vlc.sh'])
+                self.__vlc = subprocess.Popen(['sh', 'raspivid.sh'])
             elif type == CMD_STREAM_STOP:
                 if len(cmd) != 1:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
