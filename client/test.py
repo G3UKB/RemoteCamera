@@ -23,6 +23,6 @@ sock.sendto(pickle.dumps(['CMD_MOVE', 1, 20]), (SERVER_IP, CMD_PORT))
 sleep(5)
 sock.sendto(pickle.dumps(['CMD_MOVE', 0, 0]), (SERVER_IP, CMD_PORT))
 sock.sendto(pickle.dumps(['CMD_MOVE', 1, 0]), (SERVER_IP, CMD_PORT))
-sleep(5)
+sleep(20)
 sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
 
