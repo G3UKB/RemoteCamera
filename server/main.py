@@ -101,7 +101,7 @@ class RemoteCamera:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
                 # Start the video stream.
-                subprocess.call(['sh', 'home/pi/VLC/vlc.sh'])
+                subprocess.call(['sh', '/home/pi/VLC/vlc.sh'])
             else:
                 print('Unknown request type %s!' % (type))
             

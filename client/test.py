@@ -3,6 +3,7 @@
 import os, sys
 import socket
 import pickle
+from time import sleep
 
 CMD_PORT = 10002
 #RESPONSE_PORT = 10003
@@ -15,9 +16,11 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #sock.settimeout(20)
 
 # Send a move command
-sock.sendto(pickle.dumps(['CMD_MOVE', 0, 180]), (SERVER_IP, CMD_PORT))
+sock.sendto(pickle.dumps(['CMD_STREAM']), (SERVER_IP, CMD_PORT))
+sleep(5)
+sock.sendto(pickle.dumps(['CMD_MOVE', 0, 20]), (SERVER_IP, CMD_PORT))
 sock.sendto(pickle.dumps(['CMD_MOVE', 1, 20]), (SERVER_IP, CMD_PORT))
-
+sleep(5)
 sock.sendto(pickle.dumps(['CMD_MOVE', 0, 0]), (SERVER_IP, CMD_PORT))
 sock.sendto(pickle.dumps(['CMD_MOVE', 1, 0]), (SERVER_IP, CMD_PORT))
 
