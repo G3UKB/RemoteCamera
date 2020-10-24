@@ -15,7 +15,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #sock.settimeout(20)
 
 # Send a move command
-sock.sendto(pickle.dumps(['CMD_MOVE', 0, 20]), (SERVER_IP, CMD_PORT))
+sock.sendto(pickle.dumps(['CMD_MOVE', 0, 180]), (SERVER_IP, CMD_PORT))
 sock.sendto(pickle.dumps(['CMD_MOVE', 1, 20]), (SERVER_IP, CMD_PORT))
 
 sock.sendto(pickle.dumps(['CMD_MOVE', 0, 0]), (SERVER_IP, CMD_PORT))

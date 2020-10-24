@@ -65,6 +65,10 @@ class Device:
         self.__az_servo_max = 600
         self.__el_servo_min = 190
         self.__el_servo_max = 400
+        # Home is mid span for AZ i.e. +- 90 deg
+        self.__az_home = ((self.__az_servo_max-self.__az_servo_min)/2) + self.__az_servo_min
+        # Home is 90 deg for EL i.e. horizontal
+        self.__el_home = __el_servo_max
         
         self.__az_value_per_degree = (self.__az_servo_max - self.__az_servo_min) / AZ_RANGE
         self.__el_value_per_degree = (self.__el_servo_max - self.__el_servo_min) / EL_RANGE
@@ -73,13 +77,12 @@ class Device:
         self.__device.set_pwm_freq(60)
         
         # Send home
-        # AZ homes at 0 deg
-        self.__device.set_pwm(AZ, 0, 150)
-        # EL homes at 90 deg
-        self.__device.set_pwm(EL, 0, 400)
+        self.__device.set_pwm(AZ, 0, self.__az_home)
+        self.__device.set_pwm(EL, 0, self.__el_home)
         
-        self.__az_val = 150
-        self.__el_val = 400
+        # Set home values as datum
+        self.__az_val = self.__az_home
+        self.__el_val = self.__el_home
     
     #------------------------------------------------------------------
     # PUBLIC
