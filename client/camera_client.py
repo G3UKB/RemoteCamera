@@ -117,6 +117,7 @@ class CameraClient(QMainWindow):
 
         # Stop streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
+        sleep(2)
         self.__sock.close()
         
     #=======================================================
@@ -134,7 +135,7 @@ class CameraClient(QMainWindow):
     def __el_released(self):
     
         # Value ranges 0 to +90
-        val = self.__az.value()
+        val = self.__el.value()
         self.__sock.sendto(pickle.dumps(['CMD_MOVE', 1, val]), (SERVER_IP, CMD_PORT))
         
 #======================================================================================================================
