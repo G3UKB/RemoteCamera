@@ -46,6 +46,9 @@ class RemoteCamera:
         
         # Create device
         self.__dev = device.Device()
+        
+        # VLC ref
+        self.__vlc = None
     
     #------------------------------------------------------------------    
     def mainLoop(self):
@@ -96,12 +99,20 @@ class RemoteCamera:
                     return
                 self.__dev.move(cmd[1], cmd[2])
                 
-            elif type == CMD_STREAM:
+            elif type == CMD_STREAM_START:
                 if len(cmd) != 1:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
                 # Start the video stream.
-                subprocess.call(['sh', '/home/pi/VLC/vlc.sh'])
+                self.__vlc = subprocess.Popen(['sh', '/home/pi/VLC/vlc.sh'])
+            elif type == CMD_STREAM_STOP:
+                if len(cmd) != 1:
+                    print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
+                    return
+                # Stop the video stream.
+                if self.__vlc != None:
+                  self.__vlc.terminate()
+                  self.__vlc = None
             else:
                 print('Unknown request type %s!' % (type))
             
