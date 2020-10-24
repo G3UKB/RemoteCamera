@@ -109,10 +109,18 @@ class RemoteCamera:
                 if len(cmd) != 1:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
-                # Stop the video stream.
-                if self.__vlc != None:
-                  self.__vlc.terminate()
-                  self.__vlc = None
+                # We can't use Popen.terminate() or kill() because it only knows of raspivid and not vlc
+                child = subprocess.Popen('pgrep -x raspivid', stdout=subprocess.PIPE, shell=True)
+                result = child.communicate()[0]
+                raspivid_pid = result.decode('utf-8')
+                
+                child = subprocess.Popen('pgrep -x vlc', stdout=subprocess.PIPE, shell=True)
+                result = child.communicate()[0]
+                vlc_pid = result.decode('utf-8')
+                
+                os.kill(int(raspivid_pid), 9)
+                os.kill (int(vlc_pid), 9)
+                self.__vlc = None
             else:
                 print('Unknown request type %s!' % (type))
             
