@@ -25,6 +25,7 @@
 import os, sys
 from time import sleep
 import pickle
+import subprocess
 
 # Application imports
 from defs import *
@@ -94,11 +95,13 @@ class RemoteCamera:
                     print('Command %s requires 2 parameters, received %d' % (type, len(request)-1))
                     return
                 self.__dev.move(cmd[1], cmd[2])
+                
             elif type == CMD_STREAM:
                 if len(cmd) != 1:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
                 # Start the video stream.
+                subprocess.call(['sh', 'home/pi/VLC/vlc.sh'])
             else:
                 print('Unknown request type %s!' % (type))
             
