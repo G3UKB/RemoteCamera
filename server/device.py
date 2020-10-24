@@ -66,9 +66,9 @@ class Device:
         self.__el_servo_min = 190
         self.__el_servo_max = 400
         # Home is mid span for AZ i.e. +- 90 deg
-        self.__az_home = ((self.__az_servo_max-self.__az_servo_min)/2) + self.__az_servo_min
+        self.__az_home = ((self.__az_servo_max - self.__az_servo_min)/2) + self.__az_servo_min
         # Home is 90 deg for EL i.e. horizontal
-        self.__el_home = __el_servo_max
+        self.__el_home = self.__el_servo_max
         
         self.__az_value_per_degree = (self.__az_servo_max - self.__az_servo_min) / AZ_RANGE
         self.__el_value_per_degree = (self.__el_servo_max - self.__el_servo_min) / EL_RANGE
