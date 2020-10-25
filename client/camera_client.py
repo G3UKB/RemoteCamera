@@ -25,6 +25,8 @@ import os, sys
 import threading
 import socket
 import pickle
+import platform
+import subprocess
 import traceback
 
 # PyQt5 imports
@@ -108,6 +110,13 @@ class CameraClient(QMainWindow):
         # Start streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_START']), (SERVER_IP, CMD_PORT))
         
+        # Start VLC
+        # Run command in a new shell
+        if platform == 'linux' or platform == 'linux2':
+            self.__vlc = subprocess.Popen('vlc rtsp://192.168.1.107:8554/', shell=False)
+        else:
+            self.__vlc = subprocess.Popen("C:/Program Files (x86)/VideoLAN/VLC/vlc.exe rtsp://192.168.1.107:8554/", creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
+    
         # Enter event loop
         return self.__qt_app.exec_()    
     
@@ -118,6 +127,9 @@ class CameraClient(QMainWindow):
         # Stop streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
         sleep(2)
+        # Close VNC
+        self.__vlc.kill()
+        
         self.__sock.close()
         
     #=======================================================
