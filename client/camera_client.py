@@ -122,7 +122,7 @@ class CameraClient(QMainWindow):
     
     #=======================================================
     # Window events
-    def close(self):
+    def closeEvent(self, event):
 
         # Stop streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
