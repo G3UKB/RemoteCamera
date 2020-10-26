@@ -128,8 +128,12 @@ class CameraClient(QMainWindow):
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
         sleep(2)
         # Close VNC
-        self.__vlc.kill()
-        
+        if platform.system().lower() == 'linux' or platform == 'linux2':
+            child = subprocess.Popen('pgrep -x vlc', stdout=subprocess.PIPE, shell=True)
+            result = child.communicate()[0]
+            vlc_pid = result.decode('utf-8')
+            os.kill (int(vlc_pid), 9)
+        # close socket
         self.__sock.close()
         
     #=======================================================
