@@ -94,7 +94,13 @@ class CameraClient(QMainWindow):
         self.__el.setValue(0)
         self.__grid.addWidget(self.__el, 0,1)
         self.__el.sliderReleased.connect(self.__el_released)
-    
+        
+        # Add buttons
+        self.__home = QPushButton("Home")
+        self.__grid.addWidget(self.__home, 1,0)
+        self.__exit = QPushButton("Exit")
+        self.__grid.addWidget(self.__exit, 1,1)
+        
     #========================================================================================
     # Run application
     def run(self, ):
@@ -126,6 +132,9 @@ class CameraClient(QMainWindow):
     # Window events
     def closeEvent(self, event):
 
+        self.__close()
+    
+    def __close(self):
         # Stop streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_STOP']), (SERVER_IP, CMD_PORT))
         sleep(2)
@@ -137,6 +146,13 @@ class CameraClient(QMainWindow):
             os.kill (int(vlc_pid), 9)
         # close socket
         self.__sock.close()
+    
+    def __home(self):
+        self.__sock.sendto(pickle.dumps(['CMD_HOME']), (SERVER_IP, CMD_PORT))
+    
+    def __exit(self):
+        self.__close()
+        sys.exit()
         
     #=======================================================
     # Track azimuth
