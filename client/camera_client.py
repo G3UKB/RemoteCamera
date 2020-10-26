@@ -113,7 +113,7 @@ class CameraClient(QMainWindow):
         # Start VLC
         # Run command in a new shell
         if platform.system().lower() == 'linux' or platform == 'linux2':
-            self.__vlc = subprocess.Popen("vlc rtsp://%s:8554/" % SERVER_IP, shell=False)
+            self.__vlc = subprocess.Popen(["vlc", "rtsp://%s:8554/" % SERVER_IP], shell=False)
         else:
             self.__vlc = subprocess.Popen("C:/Program Files (x86)/VideoLAN/VLC/vlc.exe rtsp://%s:8554/" % SERVER_IP, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
     
