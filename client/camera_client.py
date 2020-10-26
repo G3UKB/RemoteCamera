@@ -28,6 +28,7 @@ import pickle
 import platform
 import subprocess
 import traceback
+from time import sleep
 
 # PyQt5 imports
 from PyQt5.QtWidgets import QMainWindow, QApplication
