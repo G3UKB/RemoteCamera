@@ -112,10 +112,10 @@ class CameraClient(QMainWindow):
         
         # Start VLC
         # Run command in a new shell
-        if platform == 'linux' or platform == 'linux2':
-            self.__vlc = subprocess.Popen('vlc rtsp://192.168.1.107:8554/', shell=False)
+        if lower(platform.system()) == 'linux' or platform == 'linux2':
+            self.__vlc = subprocess.Popen("vlc rtsp://%s:8554/" % SERVER_IP, shell=False)
         else:
-            self.__vlc = subprocess.Popen("C:/Program Files (x86)/VideoLAN/VLC/vlc.exe rtsp://192.168.1.107:8554/", creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
+            self.__vlc = subprocess.Popen("C:/Program Files (x86)/VideoLAN/VLC/vlc.exe rtsp://%s:8554/" % SERVER_IP, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
     
         # Enter event loop
         return self.__qt_app.exec_()    
