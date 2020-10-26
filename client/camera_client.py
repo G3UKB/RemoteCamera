@@ -110,6 +110,7 @@ class CameraClient(QMainWindow):
         
         # Start streaming
         self.__sock.sendto(pickle.dumps(['CMD_STREAM_START']), (SERVER_IP, CMD_PORT))
+        sleep(2)
         
         # Start VLC
         # Run command in a new shell
