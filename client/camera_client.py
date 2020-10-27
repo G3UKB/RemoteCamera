@@ -98,8 +98,10 @@ class CameraClient(QMainWindow):
         # Add buttons
         self.__home = QPushButton("Home")
         self.__grid.addWidget(self.__home, 1,0)
+        self.__home.clicked.connect(self.__do_home)
         self.__exit = QPushButton("Exit")
         self.__grid.addWidget(self.__exit, 1,1)
+        self.__exit.clicked.connect(self.__do_exit)
         
     #========================================================================================
     # Run application
@@ -144,13 +146,15 @@ class CameraClient(QMainWindow):
             result = child.communicate()[0]
             vlc_pid = result.decode('utf-8')
             os.kill (int(vlc_pid), 9)
+        else:
+            self.__vlc.terminate()
         # close socket
         self.__sock.close()
     
-    def __home(self):
+    def __do_home(self):
         self.__sock.sendto(pickle.dumps(['CMD_HOME']), (SERVER_IP, CMD_PORT))
     
-    def __exit(self):
+    def __do_exit(self):
         self.__close()
         sys.exit()
         
