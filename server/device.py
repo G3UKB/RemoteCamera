@@ -95,13 +95,10 @@ class Device:
         """
         
         # Send home
-        # AZ homes at 0 deg
-        self.__device.set_pwm(AZ, 0, 150)
-        # EL homes at 90 deg
-        self.__device.set_pwm(EL, 0, 400)
-        
-        self.__az_val = 150
-        self.__el_val = 400
+        # AZ homes at 90 deg
+        self.__device.move(AZ, 90)
+        # EL homes at 0 deg
+        self.__device.move(EL, 0)
         
     def move(self, ch, deg):
         """
