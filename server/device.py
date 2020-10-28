@@ -84,6 +84,11 @@ class Device:
         self.__az_val = self.__az_home
         self.__el_val = self.__el_home
     
+    def terminate(self):
+        
+        software_reset()
+        self.__device = None
+        
     #------------------------------------------------------------------
     # PUBLIC
     def home(self):

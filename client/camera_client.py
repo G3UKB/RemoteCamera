@@ -96,11 +96,18 @@ class CameraClient(QMainWindow):
         self.__el.sliderReleased.connect(self.__el_released)
         
         # Add buttons
+        self.__btngrid = QGridLayout()
+        w1 = QWidget()
+        w1.setLayout(self.__btngrid)
+        self.__grid.addWidget(w1, 1,0,1,2)
         self.__home = QPushButton("Home")
-        self.__grid.addWidget(self.__home, 1,0)
+        self.__btngrid.addWidget(self.__home, 0,0)
         self.__home.clicked.connect(self.__do_home)
+        self.__reset = QPushButton("Reset")
+        self.__btngrid.addWidget(self.__reset, 0,1)
+        self.__reset.clicked.connect(self.__do_reset)
         self.__exit = QPushButton("Exit")
-        self.__grid.addWidget(self.__exit, 1,1)
+        self.__btngrid.addWidget(self.__exit, 0,2)
         self.__exit.clicked.connect(self.__do_exit)
         
     #========================================================================================
@@ -154,6 +161,9 @@ class CameraClient(QMainWindow):
     def __do_home(self):
         self.__sock.sendto(pickle.dumps(['CMD_HOME']), (SERVER_IP, CMD_PORT))
     
+    def __do_reset(self):
+        self.__sock.sendto(pickle.dumps(['CMD_RESET']), (SERVER_IP, CMD_PORT))
+
     def __do_exit(self):
         self.__close()
         sys.exit()

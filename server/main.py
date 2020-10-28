@@ -98,6 +98,22 @@ class RemoteCamera:
                     print('Command %s requires 2 parameters, received %d' % (type, len(request)-1))
                     return
                 self.__dev.move(cmd[1], cmd[2])
+            elif type == CMD_RESET:
+                if len(cmd) != 1:
+                    print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
+                    return
+                # Restart the net interface
+                self.__netif.terminate()
+                self.__netif.join()
+                sleep(1)
+                self.__netif = netif.NetIF(self.__netCallback)
+                self.__netif.start()
+                # Restart the device
+                self.__device.terminate()
+                self.__dev = device.Device()
+                # Restart the stream
+                self.__termStream()
+                self.__vlc = subprocess.Popen(['sh', 'rpivid.sh'])
                 
             elif type == CMD_STREAM_START:
                 if len(cmd) != 1:
@@ -109,24 +125,27 @@ class RemoteCamera:
                 if len(cmd) != 1:
                     print('Command %s requires 0 parameters, received %d' % (type, len(request)-1))
                     return
-                # We can't use Popen.terminate() or kill() because it only knows of raspivid and not vlc
-                child = subprocess.Popen('pgrep -x raspivid', stdout=subprocess.PIPE, shell=True)
-                result = child.communicate()[0]
-                raspivid_pid = result.decode('utf-8')
-                
-                child = subprocess.Popen('pgrep -x vlc', stdout=subprocess.PIPE, shell=True)
-                result = child.communicate()[0]
-                vlc_pid = result.decode('utf-8')
-                
-                os.kill(int(raspivid_pid), 9)
-                os.kill (int(vlc_pid), 9)
-                self.__vlc = None
+                self.__termStream()
             else:
                 print('Unknown request type %s!' % (type))
             
         except pickle.UnpicklingError:
             print('Failed to unpickle request data!')
 
+    def __termStream(self):
+        # We can't use Popen.terminate() or kill() because it only knows of raspivid and not vlc
+        child = subprocess.Popen('pgrep -x raspivid', stdout=subprocess.PIPE, shell=True)
+        result = child.communicate()[0]
+        raspivid_pid = result.decode('utf-8')
+        
+        child = subprocess.Popen('pgrep -x vlc', stdout=subprocess.PIPE, shell=True)
+        result = child.communicate()[0]
+        vlc_pid = result.decode('utf-8')
+        
+        os.kill(int(raspivid_pid), 9)
+        os.kill (int(vlc_pid), 9)
+        self.__vlc = None
+                
 # Entry point            
 if __name__ == '__main__':
     main = RemoteCamera()
